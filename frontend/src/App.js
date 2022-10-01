@@ -14,16 +14,8 @@ function App() {
 
   return (
     <SpotifyContext.Provider value={context}>
-      <Room />
-      {/* <Home /> */}
-
-      <footer class="footer mt-6">
-        <div class="content has-text-centered">
-          <p>
-            <strong>Spotify Party</strong> by Daniel Kim, Andrew Milas, Kevin Wu, and Jonathan Yin.
-          </p>
-        </div>
-      </footer>
+      {/* <Room /> */}
+      <Home />
     </SpotifyContext.Provider>
   );
 }
