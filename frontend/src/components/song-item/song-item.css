@@ -1,0 +1,12 @@
+.item-icon {
+    width: 100%;
+}
+
+.song-name-container {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    white-space: unset !important;
+    word-wrap: break-word;
+    height: auto !important;
+}
