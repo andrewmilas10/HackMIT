@@ -1,13 +1,12 @@
 import firebase_admin
 from firebase_admin import db
 import flask
-
 from firebase_admin import credentials
 
-cred = credentials.Certificate("hackmit-ba376-firebase-adminsdk-2toxn-e69e501fa4.json")
+cred = credentials.Certificate("sound-vault-364222-firebase-adminsdk-ooem4-a02213a8af.json")
 
 firebase_admin.initialize_app(cred, options={
-    'databaseURL': 'https://hackmit-ba376-default-rtdb.firebaseio.com',
+    'databaseURL': 'https://sound-vault-364222-default-rtdb.firebaseio.com/',
 })
 
 SUPERHEROES = db.reference('songQueues')
