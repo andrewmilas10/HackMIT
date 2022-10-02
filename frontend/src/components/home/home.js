@@ -2,15 +2,18 @@ import React, { useContext, useState } from "react";
 import { SpotifyContext } from "../../App";
 import axios from "axios";
 
-// axios({
-//     method: "GET",
-//     url: "/hello/",
-// })
-//     .then((response) => {
-//         const res = response.data;
-//         alert(res);
-//     }).catch((error) => {
-//     });
+const getData = () => {
+  axios({
+      method: "GET",
+      url: "/hello/",
+  })
+      .then((response) => {
+          const res = response.data;
+          console.log(res);
+      }).catch((error) => {
+
+      });
+}
 
 export const Home = () => {
   const state = useContext(SpotifyContext);
@@ -43,10 +46,10 @@ export const Home = () => {
           onChange={(e) => setRoom(e.target.value)}
           value={room}
         />
-        <form action="/login">
+        <form action="http://localhost:3000/login" method="post">
             <input type="submit" value="Press to log in"/>
         </form>
-        <button className="button" onClick={() => {}}>
+        <button className="button" onClick={getData}>
             Join room
         </button>
 

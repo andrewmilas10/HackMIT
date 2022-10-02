@@ -15,6 +15,7 @@ client_id='f038c9e7ef86446fa418a6dbc29fe429'
 client_secret='2b6c56181a484c0ca0464c811778574a'
 redirect_uri='http://127.0.0.1:5000/callback'
 CACHE = '.spotipyoauthcache'
+access_token = ""
 
 # @app.route('/')
 # def index():
@@ -56,9 +57,6 @@ def login():
 
 @app.route('/callback', methods=['GET', 'POST'])
 def index():
-
-    access_token = ""
-   
     token_info = sp_oauth.get_cached_token()
     print("ACCESS", token_info, file=sys.stdout)
     if token_info:
@@ -78,10 +76,7 @@ def index():
     if access_token:
         sp = spotipy.Spotify(access_token)
         results = sp.current_user()
-
-
         return redirect('http://localhost:3000')
-
     # else:
     return 'test'
 
