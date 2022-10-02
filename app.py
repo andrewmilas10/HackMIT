@@ -21,6 +21,8 @@ scope = "user-read-currently-playing user-read-playback-state user-modify-playba
 client_id='f038c9e7ef86446fa418a6dbc29fe429'
 client_secret='2b6c56181a484c0ca0464c811778574a'
 redirect_uri='http://127.0.0.1:5000/callback'
+prod_redirect_uri = "https://party-session.herokuapp.com/callback"
+prod_url = "https://party-session.herokuapp.com/"
 CACHE = '.spotipyoauthcache'
 access_token = ""
 
@@ -44,7 +46,8 @@ socketio.start_background_task(target = looper_thread)
 print('test', file=sys.stdout)
 @app.route('/login', methods=['GET', 'POST'])
 def verify():
-    sp_oauth = SpotifyOAuth(client_id, client_secret,redirect_uri,scope=scope, open_browser=True)
+    # sp_oauth = SpotifyOAuth(client_id, client_secret,redirect_uri,scope=scope, open_browser=True)
+    sp_oauth = SpotifyOAuth(client_id, client_secret,prod_redirect_uri,scope=scope, open_browser=True)
     current_oauths.append(sp_oauth)
     auth_url = sp_oauth.get_authorize_url()
     print("redirect", auth_url, file=sys.stdout)
@@ -74,7 +77,8 @@ def index():
         sp = spotipy.Spotify(access_token)
         room_id = uuid.uuid1()
         rooms[str(room_id)] = Room(sp_oauth)
-        return redirect('http://localhost:3000/' + str(room_id))
+        # return redirect('http://localhost:3000/' + str(room_id))
+        return redirect(prod_url + str(room_id))
     
     return 'test'
 
