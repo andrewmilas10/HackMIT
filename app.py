@@ -1,8 +1,10 @@
 from flask import Flask, request, url_for, redirect
 from flask_socketio import SocketIO, emit
 from flask_socketio import join_room, leave_room
+from room import Room
 from flask_cors import CORS
 import random
+import uuid
 
 app = Flask(__name__, static_folder='./frontend/build', static_url_path='/')
 socketio = SocketIO(app)
@@ -18,6 +20,9 @@ redirect_uri='http://127.0.0.1:5000/callback'
 CACHE = '.spotipyoauthcache'
 access_token = ""
 
+rooms = {}
+
+
 # @app.route('/')
 # def index():
 #     return app.send_static_file('index.html')
@@ -32,32 +37,36 @@ access_token = ""
 #     auth_url = sp_oauth.get_authorize_url()
 #     print('url', auth_url, file=sys.stdout)
 #     return redirect(auth_url)
-sp_oauth = SpotifyOAuth(client_id, client_secret,redirect_uri,scope=scope, open_browser=True)
+
+current_oauths = []
 
 @app.route('/login', methods=['GET', 'POST'])
 def verify():
+    sp_oauth = SpotifyOAuth(client_id, client_secret,redirect_uri,scope=scope, open_browser=True)
+    current_oauths.append(sp_oauth)
     auth_url = sp_oauth.get_authorize_url()
     print("redirect", auth_url, file=sys.stdout)
     return redirect(auth_url)
 
 
 
-@app.route('/hello/', methods=['GET', 'POST'])
-def login():
-    token_info = sp_oauth.get_cached_token()
-    access_token = token_info['access_token']
-    sp = spotipy.Spotify(auth=access_token)
+# @app.route('/search_songs', methods=['GET', 'POST'])
+# def login():
+#     token_info = sp_oauth.get_cached_token()
+#     access_token = token_info['access_token']
+#     sp = spotipy.Spotify(auth=access_token)
 
-    trackid = sp.current_user_playing_track()['item']['id']
-    data = sp.track(trackid)
-    name = data['name']
-    artist = data['artists'][0]['name']
-    album_art = data['album']['images'][0]['url']
-    return {'name': name, 'artist': artist}
+#     trackid = sp.current_user_playing_track()['item']['id']
+#     data = sp.track(trackid)
+#     name = data['name']
+#     artist = data['artists'][0]['name']
+#     album_art = data['album']['images'][0]['url']
+#     return {'name': name, 'artist': artist}
 
 
 @app.route('/callback', methods=['GET', 'POST'])
 def index():
+    sp_oauth = current_oauths.pop()
     token_info = sp_oauth.get_cached_token()
     print("ACCESS", token_info, file=sys.stdout)
     if token_info:
@@ -72,21 +81,19 @@ def index():
     if sp_oauth.is_token_expired(token_info):
         token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
         access_token = token_info['access_token']
-        sp = spotipy.Spotify(auth=access_token)
     if access_token:
         sp = spotipy.Spotify(access_token)
-        results = sp.current_user()
+        room_id = uuid.uuid1()
+        rooms[room_id] = Room(sp_oauth)
         return redirect('http://localhost:3000/' + str(random.randint(100000,999999)))
+    
     return 'test'
 
-
-def create_spotify_oauth():
-    return SpotifyOAuth(
-        client_id=client_id,
-        client_secret=client_secret,
-        redirect_uri=redirect_uri,
-        scope=scope
-    )
+@app.route('/search', methods=['GET', 'POST'])
+def index():
+    params = request.get_json()['params']
+    room_id, query = params['room_id'], params['query']
+    return rooms[room_id].getSong(query)
 
 @socketio.on('join')
 def on_join(data):
