@@ -1,3 +1,4 @@
+from distutils.log import debug
 from flask import Flask, request, url_for, redirect
 from flask_socketio import SocketIO, emit
 from flask_socketio import join_room, leave_room
@@ -17,8 +18,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
 scope = "user-read-currently-playing user-read-playback-state user-modify-playback-state"
-client_id='8f8a8980909d4e10a27e9e4e7ac702f5'
-client_secret='ce890f30ea2749849d1e48faa8f81f05'
+client_id='f038c9e7ef86446fa418a6dbc29fe429'
+client_secret='2b6c56181a484c0ca0464c811778574a'
 redirect_uri='http://127.0.0.1:5000/callback'
 CACHE = '.spotipyoauthcache'
 access_token = ""
@@ -30,8 +31,9 @@ current_oauths = []
 def looper_thread():
     print("doing stuff")
     while True:
+        print("NEW LINES\n")
         for r in rooms:
-            print("NEW LINES\n")
+            print("NEW ROOOOOM\n")
             rooms[r].someFunction()
         time.sleep(5)
 
@@ -118,6 +120,5 @@ def on_leave(data):
 
 
 if __name__ == '__main__':
-    print("POOP")
     x = threading.Thread(target = looper_thread).start()
-    socketio.run(app, host='0.0.0.0', port=105)
+    socketio.run(app, host='0.0.0.0', port=105, debug=True)
