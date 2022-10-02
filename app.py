@@ -41,7 +41,7 @@ def looper_thread():
         socketio.sleep(1)
 
 # x.start()
-socketio.start_background_task(target = looper_thread)
+# socketio.start_background_task(target = looper_thread)
 
 @app.route('/')
 def buildstatic():
