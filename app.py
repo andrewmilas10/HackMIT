@@ -43,6 +43,13 @@ def looper_thread():
 # x.start()
 socketio.start_background_task(target = looper_thread)
 
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
+
 print('test', file=sys.stdout)
 @app.route('/login', methods=['GET', 'POST'])
 def verify():
