@@ -70,11 +70,24 @@ def search():
 def queue():
     params = request.get_json()['params']
     room_id, song = params['room_id'], params['song']
-    print(rooms)
+    rooms[room_id].addVote(song, 1)
+    socketio.emit("update_queue", rooms[room_id].sendDanAll()['queue'], to=room_id)
+    return ''
+
+@app.route('/downvote', methods=['GET', 'POST'])
+def queue():
+    params = request.get_json()['params']
+    room_id, song = params['room_id'], params['song']
+    rooms[room_id].downvote(song, -1)
+    socketio.emit("update_queue", rooms[room_id].sendDanAll()['queue'], to=room_id)
+    return ''
+
+@app.route('/downvote', methods=['GET', 'POST'])
+def queue():
+    params = request.get_json()['params']
+    room_id, song = params['room_id'], params['song']
     rooms[room_id].addtoQueue(song)
     socketio.emit("update_queue", rooms[room_id].sendDanAll()['queue'], to=room_id)
-    # print('fuck')
-    # rooms[room_id].popfromQueue()
     return ''
 
 
