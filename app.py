@@ -44,7 +44,7 @@ def looper_thread():
 socketio.start_background_task(target = looper_thread)
 
 @app.route('/')
-def index():
+def buildstatic():
     return app.send_static_file('index.html')
 @app.errorhandler(404)
 def not_found(e):
