@@ -43,14 +43,13 @@ export const Home = () => {
           onChange={(e) => setRoom(e.target.value)}
           value={room}
         />
-
-        <button className="button" onClick={joinRoom}>
-          Log into Spotify
-        </button>
-
+        <form action="/login">
+            <input type="submit" value="Press to log in"/>
+        </form>
         <button className="button" onClick={() => {}}>
-          Join room
+            Join room
         </button>
+
       </section>
     </div>
   );
