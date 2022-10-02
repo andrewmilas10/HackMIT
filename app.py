@@ -2,6 +2,7 @@ from flask import Flask, request, url_for, redirect
 from flask_socketio import SocketIO, emit
 from flask_socketio import join_room, leave_room
 from flask_cors import CORS
+import random
 
 app = Flask(__name__, static_folder='./frontend/build', static_url_path='/')
 socketio = SocketIO(app)
@@ -13,7 +14,7 @@ from spotipy.oauth2 import SpotifyOAuth
 scope = "user-read-currently-playing user-read-playback-state user-modify-playback-state"
 client_id='f038c9e7ef86446fa418a6dbc29fe429'
 client_secret='2b6c56181a484c0ca0464c811778574a'
-redirect_uri='http://localhost:3000/callback'
+redirect_uri='http://127.0.0.1:5000/callback'
 CACHE = '.spotipyoauthcache'
 access_token = ""
 
@@ -62,7 +63,6 @@ def index():
     if token_info:
         access_token = token_info['access_token']
     else:
-       
         url = request.url
         print("URL", url, file=sys.stdout)
         code = sp_oauth.parse_response_code(url)
@@ -76,8 +76,7 @@ def index():
     if access_token:
         sp = spotipy.Spotify(access_token)
         results = sp.current_user()
-        return redirect('http://localhost:3000')
-    # else:
+        return redirect('http://localhost:3000/' + str(random.randint(100000,999999)))
     return 'test'
 
 
@@ -91,14 +90,14 @@ def create_spotify_oauth():
 
 @socketio.on('join')
 def on_join(data):
-    username = data['username']
+    # username = data['username']
     room = data['room']
     join_room(room)
     # send(username + ' has entered the room.', to=room)
 
 @socketio.on('leave')
 def on_leave(data):
-    username = data['username']
+    # username = data['username']
     room = data['room']
     leave_room(room)
     # send(username + ' has left the room.', to=room)
