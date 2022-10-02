@@ -29,6 +29,7 @@ function App() {
     }
 
     s.on("update_queue", (queue) => {
+      console.log(queue)
       setQueue(queue);
     });
   }, []);

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./room.css";
 import { SpotifyContext } from "../../App";
 import { Song } from "../song/song";
@@ -9,6 +9,7 @@ export const Room = () => {
   const state = useContext(SpotifyContext);
 
   const [searchResults, setSearchResults] = useState([]);
+  const [queueResults, setQueueResults] = useState([]);
 
   const query = (e) => {
     if (e == null || e.target == null || e.target.value == null || e.target.value.length === 0) {
@@ -24,16 +25,22 @@ export const Room = () => {
       })
       .catch((error) => {});
   };
-  const queue = (result) => {
+  const enqueue = (song) => {
     
     axios
-      .post("/queue", { params: { room_id: state.room, song: result } })
+      .post("/queue", { params: { room_id: state.room, song: song } })
       .then((response) => {
         const res = response.data;
         // console.log(res);
       })
       .catch((error) => {});
   };
+
+  const upvote = (song) => {
+    axios
+      .post("/queue", { params: { room_id: state.room, song: song } })
+  };
+
 
   return (
     <div className="is-flex is-flex-direction-column container is-max-desktop is-fluid">
@@ -51,7 +58,7 @@ export const Room = () => {
           songName={result.name}
           artists={result.artist}
           length=""
-        /><button onClick={()=>queue(result)}>Add to queue</button></div>
+        /><button onClick={()=>enqueue(result)}>Add to queue</button></div>
           
           
         ))}
@@ -66,7 +73,16 @@ export const Room = () => {
       </div>
       <div className="my-5">
         <h1 className="title">Queue</h1>
-        <SongItem
+        {state.queue.map((result) => (
+          <div><Song
+          key={result.id}
+          songName={result.name}
+          artists={result.artist}
+          length=""
+          
+        /><button onClick={()=>enqueue(result)}>upvote</button><button onClick={()=>enqueue(result)}>peeonthem</button></div>
+        ))}
+        {/* <SongItem
           songName="High On Life (feat. Bonn)"
           artists="Martin Garrix, Bonn"
           length="3:51"
@@ -79,8 +95,7 @@ export const Room = () => {
         <SongItem
           songName="High On Life (feat. Bonn)"
           artists="Martin Garrix, Bonn"
-          length="3:51"
-        />
+          length="3:51" */}
       </div>
     </div>
   );

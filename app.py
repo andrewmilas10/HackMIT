@@ -70,10 +70,13 @@ def search():
 def queue():
     params = request.get_json()['params']
     room_id, song = params['room_id'], params['song']
+    print(rooms)
     rooms[room_id].addtoQueue(song)
-    print('fuck')
-    rooms[room_id].popfromQueue()
+    socketio.emit("update_queue", rooms[room_id].sendDanAll()['queue'], to=room_id)
+    # print('fuck')
+    # rooms[room_id].popfromQueue()
     return ''
+
 
 @socketio.on('join')
 def on_join(data):
