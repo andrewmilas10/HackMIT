@@ -11,18 +11,18 @@ export const Room = () => {
         <div className="is-flex is-flex-direction-column container is-max-desktop is-fluid">
             <div className="my-5">
                 <h1 className="title">Suggest a song</h1>
-                <input class="input" type="text" placeholder="Song name"></input>
+                <input className="input" type="text" placeholder="Song name"></input>
                 <Song songName="High On Life (feat. Bonn)" artists="Martin Garrix, Bonn" length="3:51" />
                 <Song songName="High On Life (feat. Bonn)" artists="Martin Garrix, Bonn" length="3:51" />
                 <Song songName="High On Life (feat. Bonn)" artists="Martin Garrix, Bonn" length="3:51" />
             </div>
             <div className="my-5">
-                <h1 class="title">Currently playing</h1>
+                <h1 className="title">Currently playing</h1>
                 <Song songName={state.songName} artists="Oliver Heldens" length="3:51" />
             </div>
             <div className="my-5">
                 <h1 className="title">Queue</h1>
-                <SongItem songName="High On Life (feat. Bonn)askndfipabofjiduohiasdbfjivuosdhenjfbuoewjlnfbewnfbiuewohfljbrewfobifreu" artists="Martin Garrix, Bonn" length="3:51"/>
+                <SongItem songName="High On Life (feat. Bonn)" artists="Martin Garrix, Bonn" length="3:51"/>
                 <SongItem songName="High On Life (feat. Bonn)" artists="Martin Garrix, Bonn" length="3:51"/>
                 <SongItem songName="High On Life (feat. Bonn)" artists="Martin Garrix, Bonn" length="3:51"/>
             </div>

@@ -1,29 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import 'bulma/css/bulma.min.css';
-import { Room } from './components/room/room';
-import io from 'socket.io-client';
-import { Home } from './components/home/home';
+import React, { useEffect, useState } from "react";
+import "bulma/css/bulma.min.css";
+import { Room } from "./components/room/room";
+import io from "socket.io-client";
+import { Home } from "./components/home/home";
 
 export const SpotifyContext = React.createContext();
 
 function App() {
-  const [songName, setSongName] = useState("Set Me Free (feat. MAX)");
+  const [room, setRoom] = useState(null);
   const [socket, setSocket] = useState(null);
 
   const context = {
     socket: socket,
-    songName: songName
-  }
+    room: room,
+    setRoom: setRoom,
+  };
 
   useEffect(() => {
-    const socket = io();
-    setSocket(socket);
-  }, []);
+    setSocket(io());
+  },[]);
 
   return (
     <SpotifyContext.Provider value={context}>
-      {/* <Room /> */}
-      <Home />
+      {room ? <Room /> : <Home />}
     </SpotifyContext.Provider>
   );
 }
