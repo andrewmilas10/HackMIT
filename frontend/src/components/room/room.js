@@ -69,8 +69,22 @@ export const Room = () => {
           </div>
         ))}
       </div>
+      <nav className="navbar is-fixed-bottom">
+        {state.song && state.song.name && state.song.name.trim().length > 0 ? (
+          <Song
+            songName={state.song["name"]}
+            artists={state.song["artist"]}
+            length="3:51"
+            isFooter={true}
+          />
+        ) : (
+          <div className="box" style={{ width: "100%" }}>
+            No song currently playing
+          </div>
+        )}
+      </nav>
       <div className="my-5">
-        <h1 className="title">Currently playing</h1>
+        {/* <h1 className="title">Currently playing</h1>
         {state.song && state.song.name && state.song.name.trim().length > 0 ? (
           <Song
             songName={state.song["name"]}
@@ -79,7 +93,7 @@ export const Room = () => {
           />
         ) : (
           <div className="box">No song currently playing</div>
-        )}
+        )} */}
       </div>
       <div className="my-5">
         <h1 className="title">Queue</h1>
