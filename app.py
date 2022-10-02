@@ -66,6 +66,15 @@ def search():
     room_id, query = params['room_id'], params['query']
     return rooms[room_id].getSong(query)
 
+@app.route('/queue', methods=['GET', 'POST'])
+def queue():
+    params = request.get_json()['params']
+    room_id, song = params['room_id'], params['song']
+    rooms[room_id].addtoQueue(song)
+    print('fuck')
+    rooms[room_id].popfromQueue()
+    return ''
+
 @socketio.on('join')
 def on_join(data):
     # username = data['username']

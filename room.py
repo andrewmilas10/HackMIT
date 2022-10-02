@@ -68,7 +68,7 @@ class Room:
     def addtoQueue(self, song):
         song['votes'] = 1
         if not self.isEmpty():
-            if(self.local_queue[self.len-1]['votes'] >0):
+            if(self.local_queue[-1]['votes'] >0):
                 self.local_queue.append(song)
             else:
                 left,right=0,self.len

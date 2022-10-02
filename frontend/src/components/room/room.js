@@ -24,6 +24,16 @@ export const Room = () => {
       })
       .catch((error) => {});
   };
+  const queue = (result) => {
+    
+    axios
+      .post("/queue", { params: { room_id: state.room, song: result } })
+      .then((response) => {
+        const res = response.data;
+        // console.log(res);
+      })
+      .catch((error) => {});
+  };
 
   return (
     <div className="is-flex is-flex-direction-column container is-max-desktop is-fluid">
@@ -36,12 +46,14 @@ export const Room = () => {
           onChange={query}
         ></input>
         {searchResults.map((result) => (
-          <Song
-            key={result.id}
-            songName={result.name}
-            artists={result.artist}
-            length=""
-          />
+          <div><Song
+          key={result.id}
+          songName={result.name}
+          artists={result.artist}
+          length=""
+        /><button onClick={()=>queue(result)}>Add to queue</button></div>
+          
+          
         ))}
       </div>
       <div className="my-5">
