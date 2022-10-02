@@ -64,7 +64,7 @@ def verify():
 @app.route('/callback', methods=['GET', 'POST'])
 def index():
     if len(current_oauths) == 0:
-        sp_oauth = SpotifyOAuth(client_id, client_secret,redirect_uri,scope=scope, open_browser=True)
+        sp_oauth = SpotifyOAuth(client_id, client_secret,prod_redirect_uri,scope=scope, open_browser=True)
     else:
         sp_oauth = current_oauths[-1]
 

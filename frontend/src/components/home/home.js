@@ -17,12 +17,13 @@ const getData = () => {
 export const Home = () => {
   const state = useContext(SpotifyContext);
   const [room, setRoom] = useState("");
-
+  const redirect_uri="http://localhost:3000/login"
+  const prod_redirect_uri = "https://party-session.herokuapp.com/login"
   return (
     <div className="container mt-6">
       <section className="section">
         <h1 className="title">Spotify Party!</h1>
-        <form action="http://localhost:3000/login" method="post">
+        <form action={prod_redirect_uri} method="post">
           <input type="submit" value="Press to log in" />
         </form>
       </section>
