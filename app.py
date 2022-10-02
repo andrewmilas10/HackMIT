@@ -13,7 +13,7 @@ from spotipy.oauth2 import SpotifyOAuth
 scope = "user-read-currently-playing user-read-playback-state user-modify-playback-state"
 client_id='f038c9e7ef86446fa418a6dbc29fe429'
 client_secret='2b6c56181a484c0ca0464c811778574a'
-redirect_uri='http://127.0.0.1:5000/callback'
+redirect_uri='http://localhost:3000/callback'
 CACHE = '.spotipyoauthcache'
 access_token = ""
 
