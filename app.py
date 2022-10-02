@@ -29,14 +29,19 @@ rooms = {}
 current_oauths = []
 
 def looper_thread():
-    print("doing stuff")
+    # print("doing stuff", file=sys.stdout)
     while True:
-        print("NEW LINES\n")
         for r in rooms:
-            print("NEW ROOOOOM\n")
+            # print("NEW LINES\n")
             rooms[r].someFunction()
-        time.sleep(5)
+            socketio.emit("update_state", rooms[r].sendDanAll(), to=r)
 
+        socketio.sleep(1)
+
+# x.start()
+socketio.start_background_task(target = looper_thread)
+
+print('test', file=sys.stdout)
 @app.route('/login', methods=['GET', 'POST'])
 def verify():
     sp_oauth = SpotifyOAuth(client_id, client_secret,redirect_uri,scope=scope, open_browser=True)
@@ -120,5 +125,6 @@ def on_leave(data):
 
 
 if __name__ == '__main__':
-    x = threading.Thread(target = looper_thread).start()
+    # socketio.start_background_task(target = looper_thread)
+
     socketio.run(app, host='0.0.0.0', port=105, debug=True)

@@ -17,6 +17,7 @@ class Room:
         self.Recs = Recs
         self.users = 1
         self.lastKicked = False
+        self.getCurrentlyPlaying()
     
     def getSp(self):
         token_info = self.sp_oauth.get_cached_token()
@@ -26,6 +27,8 @@ class Room:
     def getCurrentlyPlaying(self):
         sp = self.getSp()
         data = sp.current_user_playing_track()
+        temp = data['item']
+        self.current_song = {'name':temp['name'], 'id':temp['id'], 'artist':temp['artists'][0]['name']}
         if data:
             name, artist, album_art = self.get_track_data(data['item']['id'])
             progress_ms = data['progress_ms']/1000
@@ -160,10 +163,8 @@ class Room:
 
     def someFunction(self):
         data = self.getCurrentlyPlaying()
-        print(data, "\n\n\n\n\n\n")
         if data:
             if (data[4] - data[3] < 10 and self.just_added != self.nextSong()):
-                self.sortQueue()
                 self.popfromQueue()
             else:
                 return 
