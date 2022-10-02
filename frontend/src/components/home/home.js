@@ -1,20 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
+import { SpotifyContext } from '../../App';
 import axios from "axios";
 
-function getData() {
-    axios({
-        method: "GET",
-        url: "/hello/",
-    })
-        .then((response) => {
-            const res = response.data;
-            alert(res);
-        }).catch((error) => {
-
-        })
-}
-
 export const Home = () => {
+    const state = useContext(SpotifyContext);
+
+    const getData = () => {
+        state.socket.emit('join', { 'username': 'ef', 'room': 'room1af' });
+        axios({
+            method: "GET",
+            url: "/hello/",
+        })
+            .then((response) => {
+                const res = response.data;
+                alert(res);
+            }).catch((error) => {
+
+            });
+    }
     return (
         <div className="container mt-6">
             <section className="section">
