@@ -7,23 +7,25 @@ import { BiDownvote, BiUpvote } from "react-icons/bi";
 export const SongItem = ({
   songName,
   artists,
-  length,
   upvoteFn,
   downvoteFn,
   upvotes,
   downvotes,
+  albumCoverImg,
 }) => {
   return (
     <div className="box my-2">
       <div className="is-flex is-flex-direction-row">
+        <div className="level is-one-fifth">
+          <figure class="image is-64x64">
+            <img src={albumCoverImg} />
+          </figure>
+        </div>
         <div className="level is-flex-direction-column is-four-fifths is-justify-content-flex-start mobile-song-container">
           <div className="level-item has-text-weight-bold song-name-container">
             {songName}
           </div>
           <div className="level-item">{artists}</div>
-        </div>
-        <div className="column is-flex is-align-items-center is-justify-content-flex-end">
-          {length}
         </div>
       </div>
       <div className="column is-flex is-align-items-center py-0">

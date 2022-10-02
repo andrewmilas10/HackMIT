@@ -28,8 +28,9 @@ class Room:
     def getCurrentlyPlaying(self):
         sp = self.getSp()
         data = sp.current_user_playing_track()
-        temp = data['item']
-        self.current_song = {'name':temp['name'], 'id':temp['id'], 'artist':temp['artists'][0]['name']}
+        if data:
+            temp = data['item']
+            self.current_song = {'name':temp['name'], 'id':temp['id'], 'artist':temp['artists'][0]['name']}
         if data:
             name, artist, album_art = self.get_track_data(data['item']['id'])
             progress_ms = data['progress_ms']/1000
@@ -70,7 +71,7 @@ class Room:
         return stripped[0:3]
 
     def isEmpty(self):
-        return self.len == 0
+        return len(self.local_queue) == 0
 
     def addtoQueue(self, song):
         song['upvotes'] = 1
