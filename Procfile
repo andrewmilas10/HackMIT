@@ -1,1 +1,1 @@
-web: gunicorn app:app --spew
+web: gunicorn app:app
