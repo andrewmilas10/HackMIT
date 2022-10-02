@@ -11,7 +11,7 @@ export const Song = ({
 }) => {
   return (
     <div
-      className={`box ${isFooter ? "" : "my-2"} is-clickable`}
+      className={`box ${isFooter ? "has-background-grey-lighter	" : "my-2 is-clickable"}`}
       style={isFooter ? { width: "100%" } : null}
       onClick={onClick}
     >

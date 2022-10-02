@@ -19,7 +19,7 @@ function App() {
     room: room,
     setRoom: setRoom,
     queue: queue,
-    song: song
+    song: song,
   };
 
   useEffect(() => {
@@ -31,7 +31,7 @@ function App() {
     }
 
     s.on("update_state", (state) => {
-      console.log(state)
+      console.log(state);
       setQueue(state.queue);
       setSong(state.song);
     });

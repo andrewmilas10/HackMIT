@@ -9,6 +9,10 @@ export const Room = () => {
   const state = useContext(SpotifyContext);
 
   const [searchResults, setSearchResults] = useState([]);
+  const [isLoadingSearch, setIsLoadingSearch] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [notifMsg, setNotifMsg] = useState("");
+  const [showNotif, setShowNotif] = useState(false);
 
   const query = (e) => {
     if (
@@ -20,6 +24,7 @@ export const Room = () => {
       setSearchResults([]);
       return;
     }
+    setIsLoadingSearch(true);
     axios
       .post("/search", {
         params: { room_id: state.room, query: e.target.value },
@@ -27,36 +32,71 @@ export const Room = () => {
       .then((response) => {
         const res = response.data;
         setSearchResults(res);
+        setIsLoadingSearch(false);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setIsLoadingSearch(false);
+      });
   };
   const enqueue = (song) => {
+    setSearchResults([]);
+    setIsRefreshing(true);
     axios
       .post("/queue", { params: { room_id: state.room, song: song } })
       .then((response) => {
-        setSearchResults([]);
+        setIsRefreshing(false);
+
+        setShowNotif(true);
+        setNotifMsg("New song added!");
+        setTimeout(() => {
+          setShowNotif(false);
+          setNotifMsg("");
+        }, 5000);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setIsRefreshing(false);
+      });
   };
 
   const upvote = (song) => {
-    axios.post("/upvote", { params: { room_id: state.room, song: song } });
+    setIsRefreshing(true);
+    axios
+      .post("/upvote", { params: { room_id: state.room, song: song } })
+      .then((response) => {
+        setIsRefreshing(false);
+      })
+      .catch((error) => {
+        setIsRefreshing(false);
+      });
   };
 
   const downvote = (song) => {
-    axios.post("/downvote", { params: { room_id: state.room, song: song } });
+    setIsRefreshing(true);
+    axios
+      .post("/downvote", { params: { room_id: state.room, song: song } })
+      .then((response) => {
+        setIsRefreshing(false);
+      })
+      .catch((error) => {
+        setIsRefreshing(false);
+      });
   };
 
   return (
     <div className="is-flex is-flex-direction-column container is-max-desktop is-fluid">
+      {showNotif ? (
+        <div class="notification is-primary">{notifMsg}</div>
+      ) : null}
       <div className="my-5">
         <h1 className="title">Suggest a song</h1>
-        <input
-          className="input"
-          type="text"
-          placeholder="Song name"
-          onChange={query}
-        ></input>
+        <div className={`${isLoadingSearch ? "control is-loading" : ""}`}>
+          <input
+            className="input"
+            type="text"
+            placeholder="Song name"
+            onChange={query}
+          ></input>
+        </div>
         {searchResults.map((result) => (
           <div>
             <Song
@@ -78,39 +118,36 @@ export const Room = () => {
             isFooter={true}
           />
         ) : (
-          <div className="box" style={{ width: "100%" }}>
+          <div
+            className="box has-background-grey-lighter"
+            style={{ width: "100%" }}
+          >
             No song currently playing
           </div>
         )}
       </nav>
       <div className="my-5">
-        {/* <h1 className="title">Currently playing</h1>
-        {state.song && state.song.name && state.song.name.trim().length > 0 ? (
-          <Song
-            songName={state.song["name"]}
-            artists={state.song["artist"]}
-            length="3:51"
-          />
-        ) : (
-          <div className="box">No song currently playing</div>
-        )} */}
-      </div>
-      <div className="my-5">
         <h1 className="title">Queue</h1>
-        {state.queue.map((result) => (
-          <div>
-            <SongItem
-              key={result.id}
-              songName={result.name}
-              artists={result.artist}
-              length=""
-              upvotes={result.upvotes}
-              downvotes={result.downvotes}
-              upvoteFn={() => upvote(result)}
-              downvoteFn={() => downvote(result)}
-            />
-          </div>
-        ))}
+        {isRefreshing ? (
+          <progress class="progress is-primary" max="100">
+            15%
+          </progress>
+        ) : (
+          state.queue.map((result) => (
+            <div>
+              <SongItem
+                key={result.id}
+                songName={result.name}
+                artists={result.artist}
+                length=""
+                upvotes={result.upvotes}
+                downvotes={result.downvotes}
+                upvoteFn={() => upvote(result)}
+                downvoteFn={() => downvote(result)}
+              />
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

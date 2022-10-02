@@ -4,16 +4,15 @@ import axios from "axios";
 
 const getData = () => {
   axios({
-      method: "GET",
-      url: "/hello/",
+    method: "GET",
+    url: "/hello/",
   })
-      .then((response) => {
-          const res = response.data;
-          console.log(res);
-      }).catch((error) => {
-
-      });
-}
+    .then((response) => {
+      const res = response.data;
+      console.log(res);
+    })
+    .catch((error) => {});
+};
 
 export const Home = () => {
   const state = useContext(SpotifyContext);
@@ -23,16 +22,8 @@ export const Home = () => {
     <div className="container mt-6">
       <section className="section">
         <h1 className="title">Spotify Party!</h1>
-
-        {/* <input
-          className="input"
-          type="text"
-          placeholder="Enter room id"
-          onChange={(e) => setRoom(e.target.value)}
-          value={room}
-        /> */}
         <form action="http://localhost:3000/login" method="post">
-            <input type="submit" value="Press to log in"/>
+          <input type="submit" value="Press to log in" />
         </form>
       </section>
     </div>
