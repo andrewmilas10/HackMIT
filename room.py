@@ -66,6 +66,8 @@ class Room:
         return self.len == 0
 
     def addtoQueue(self, song):
+        song['upvotes'] = 1
+        song['downvotes'] = 0
         song['votes'] = 1
         if not self.isEmpty():
             if(self.local_queue[-1]['votes'] >0):
@@ -116,6 +118,7 @@ class Room:
         x = 0
         for x in range(self.len):
             if(Q[x]['id'] == songid):
+                Q[x]['upvotes']+=dir
                 Q[x]['votes']+=dir
                 break;
         y = x-1
@@ -125,14 +128,15 @@ class Room:
                 break;
             y-=1
         if y != x-1:
-            return True
-        return False
+            return 1
+        return -1
     
     def removeVote(self, songid, dir): #Keep sorted directly after removing votes, PING CLIENT IF RETURNS 1
         Q = self.local_queue
         x = 0
         for x in range(len(Q)):
             if(Q[x]['id'] == songid):
+                Q[x]['downvotes']+=dir
                 Q[x]['votes']+=dir
                 break;
         y = x+1
@@ -156,6 +160,7 @@ class Room:
 
     def someFunction(self):
         data = self.getCurrentlyPlaying()
+        print(data, "\n\n\n\n\n\n")
         if data:
             if (data[4] - data[3] < 10 and self.just_added != self.nextSong()):
                 self.sortQueue()
@@ -202,8 +207,9 @@ class Room:
         return -self.users/2
 
     def kickLast(self): #Also Ping? How to do this?
-        self.local_queue.pop()
-        self.len-=1
+        return
+    #     self.local_queue.pop()
+    #     self.len-=1
     
     def sendDanAll(self):
         data = {}

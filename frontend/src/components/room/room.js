@@ -38,8 +38,13 @@ export const Room = () => {
 
   const upvote = (song) => {
     axios
-      .post("/queue", { params: { room_id: state.room, song: song } })
+      .post("/upvote", { params: { room_id: state.room, song: song } })
   };
+
+  const downvote = (song) => {
+    axios
+      .post("/downvote", { params: { room_id: state.room, song: song } })
+  }
 
 
   return (
@@ -65,11 +70,17 @@ export const Room = () => {
       </div>
       <div className="my-5">
         <h1 className="title">Currently playing</h1>
-        <Song
-          songName={state.songName}
-          artists="Oliver Heldens"
+         {state.song ? <Song
+          songName={state.song['name']} 
+          artists={state.song['artist']}
           length="3:51"
-        />
+        /> : 
+          <Song
+          songName= "None"
+          artists= "None"
+          length="3:51"
+        /> 
+        }
       </div>
       <div className="my-5">
         <h1 className="title">Queue</h1>
@@ -80,7 +91,7 @@ export const Room = () => {
           artists={result.artist}
           length=""
           
-        /><button onClick={()=>enqueue(result)}>upvote</button><button onClick={()=>enqueue(result)}>peeonthem</button></div>
+        /><button onClick={()=>upvote(result)}>upvote</button><button onClick={()=>downvote(result)}>peeonthem</button></div>
         ))}
         {/* <SongItem
           songName="High On Life (feat. Bonn)"

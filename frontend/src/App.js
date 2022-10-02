@@ -12,12 +12,14 @@ function App() {
   const [room, setRoom] = useState(defaultRoomID);
   const [socket, setSocket] = useState(null);
   const [queue, setQueue] = useState([]);
+  const [song, setSong] = useState({});
 
   const context = {
     socket: socket,
     room: room,
     setRoom: setRoom,
     queue: queue,
+    song: song
   };
 
   useEffect(() => {
@@ -28,9 +30,10 @@ function App() {
       s.emit("join", { room: defaultRoomID }, () => {});
     }
 
-    s.on("update_queue", (queue) => {
-      console.log(queue)
-      setQueue(queue);
+    s.on("update_state", (state) => {
+      console.log(state)
+      setQueue(state.queue);
+      setSong(state.song);
     });
   }, []);
 

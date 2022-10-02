@@ -5,6 +5,9 @@ from room import Room
 from flask_cors import CORS
 import random
 import uuid
+import threading
+import time
+
 
 app = Flask(__name__, static_folder='./frontend/build', static_url_path='/')
 socketio = SocketIO(app)
@@ -14,8 +17,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
 scope = "user-read-currently-playing user-read-playback-state user-modify-playback-state"
-client_id='f038c9e7ef86446fa418a6dbc29fe429'
-client_secret='2b6c56181a484c0ca0464c811778574a'
+client_id='8f8a8980909d4e10a27e9e4e7ac702f5'
+client_secret='ce890f30ea2749849d1e48faa8f81f05'
 redirect_uri='http://127.0.0.1:5000/callback'
 CACHE = '.spotipyoauthcache'
 access_token = ""
@@ -23,6 +26,14 @@ access_token = ""
 rooms = {}
 
 current_oauths = []
+
+def looper_thread():
+    print("doing stuff")
+    while True:
+        for r in rooms:
+            print("NEW LINES\n")
+            rooms[r].someFunction()
+        time.sleep(5)
 
 @app.route('/login', methods=['GET', 'POST'])
 def verify():
@@ -66,28 +77,28 @@ def search():
     room_id, query = params['room_id'], params['query']
     return rooms[room_id].getSong(query)
 
+@app.route('/upvote', methods=['GET', 'POST'])
+def upvote():
+    params = request.get_json()['params']
+    room_id, songid = params['room_id'], params['song']['id']
+    rooms[room_id].addVote(songid, 1)
+    socketio.emit("update_state", rooms[room_id].sendDanAll(), to=room_id)
+    return ''
+
+@app.route('/downvote', methods=['GET', 'POST'])
+def downvote():
+    params = request.get_json()['params']
+    room_id, songid = params['room_id'], params['song']['id']
+    rooms[room_id].removeVote(songid, -1)
+    socketio.emit("update_state", rooms[room_id].sendDanAll(), to=room_id)
+    return ''
+
 @app.route('/queue', methods=['GET', 'POST'])
 def queue():
     params = request.get_json()['params']
     room_id, song = params['room_id'], params['song']
-    rooms[room_id].addVote(song, 1)
-    socketio.emit("update_queue", rooms[room_id].sendDanAll()['queue'], to=room_id)
-    return ''
-
-@app.route('/downvote', methods=['GET', 'POST'])
-def queue():
-    params = request.get_json()['params']
-    room_id, song = params['room_id'], params['song']
-    rooms[room_id].downvote(song, -1)
-    socketio.emit("update_queue", rooms[room_id].sendDanAll()['queue'], to=room_id)
-    return ''
-
-@app.route('/downvote', methods=['GET', 'POST'])
-def queue():
-    params = request.get_json()['params']
-    room_id, song = params['room_id'], params['song']
     rooms[room_id].addtoQueue(song)
-    socketio.emit("update_queue", rooms[room_id].sendDanAll()['queue'], to=room_id)
+    socketio.emit("update_state", rooms[room_id].sendDanAll(), to=room_id)
     return ''
 
 
@@ -107,4 +118,6 @@ def on_leave(data):
 
 
 if __name__ == '__main__':
+    print("POOP")
+    x = threading.Thread(target = looper_thread).start()
     socketio.run(app, host='0.0.0.0', port=105)
