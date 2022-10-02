@@ -14,6 +14,7 @@ class Room:
         self.just_added = None
         self.len = 0
         self.current_song = None
+        self.dummy = None
         self.Recs = Recs
         self.users = 1
         self.lastKicked = False
@@ -33,6 +34,7 @@ class Room:
             name, artist, album_art = self.get_track_data(data['item']['id'])
             progress_ms = data['progress_ms']/1000
             duration = data['item']['duration_ms']/1000
+            self.current_song['art'] = album_art
             return name, artist, album_art, progress_ms, duration
         return
 
@@ -54,7 +56,9 @@ class Room:
         A = B['tracks']['items'][0:l]
         stripped = []
         for a in A:
-            stripped.append({'id':a['id'] , 'name':a['name'], 'artist':a['artists'][0]['name']})
+            id = a['id']
+            art = sp.track(id)['album']['images'][0]['url']
+            stripped.append({'id':a['id'] , 'name':a['name'], 'artist':a['artists'][0]['name'], 'art':art})
         return stripped
     
     def stripRecs(self, B):
@@ -95,8 +99,8 @@ class Room:
         sp = self.getSp()
         song = self.local_queue.pop(0)
         sp.add_to_queue(song['id'])
-        self.just_added = song['id']
-        self.current_song = song
+        # self.just_added = song['id']
+        self.dummy = song
         self.len-=1
 
     def getCurrentQueue(self):
@@ -163,9 +167,12 @@ class Room:
 
     def someFunction(self):
         data = self.getCurrentlyPlaying()
+
         if data:
-            if (data[4] - data[3] < 10 and self.just_added != self.nextSong()):
+            if (data[4] - data[3] < 20 and self.just_added == self.dummy):
                 self.popfromQueue()
+            elif(data[3] < 10 and self.just_added != self.dummy):
+                self.just_added = self.dummy
             else:
                 return 
         elif not self.len == 0:
