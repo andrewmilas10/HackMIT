@@ -2,8 +2,8 @@ import React from 'react';
 
 import './song.css';
 
-export const Song = ({ songName, artists, length }) => {
-    return (<div className="box my-2">
+export const Song = ({ songName, artists, length, onClick }) => {
+    return (<div className="box my-2 is-clickable" onClick={onClick}>
         <div className="columns">
             <div className="column is-flex is-flex-direction-row">
                 <div className="level is-flex-direction-column is-four-fifths is-justify-content-flex-start mobile-song-container">

@@ -142,7 +142,7 @@ class Room:
         y = x+1
         while(y <= len(Q)):
             if y == len(Q) or Q[x]['votes'] >= Q[y]['votes']:
-                Q.insert(y,Q.pop(x))
+                Q.insert(y-1,Q.pop(x))
                 break;
             y+=1
         if(Q[x]['votes'] < self.cutoff()):
