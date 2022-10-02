@@ -22,22 +22,6 @@ access_token = ""
 
 rooms = {}
 
-
-# @app.route('/')
-# def index():
-#     return app.send_static_file('index.html')
-# @app.errorhandler(404)
-# def not_found(e):
-#     return app.send_static_file('index.html')
-
-
-# @app.route('/hello/')
-# def login():
-#     sp_oauth = create_spotify_oauth()
-#     auth_url = sp_oauth.get_authorize_url()
-#     print('url', auth_url, file=sys.stdout)
-#     return redirect(auth_url)
-
 current_oauths = []
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -49,31 +33,18 @@ def verify():
     return redirect(auth_url)
 
 
-
-# @app.route('/search_songs', methods=['GET', 'POST'])
-# def login():
-#     token_info = sp_oauth.get_cached_token()
-#     access_token = token_info['access_token']
-#     sp = spotipy.Spotify(auth=access_token)
-
-#     trackid = sp.current_user_playing_track()['item']['id']
-#     data = sp.track(trackid)
-#     name = data['name']
-#     artist = data['artists'][0]['name']
-#     album_art = data['album']['images'][0]['url']
-#     return {'name': name, 'artist': artist}
-
-
 @app.route('/callback', methods=['GET', 'POST'])
 def index():
-    sp_oauth = current_oauths.pop()
+    if len(current_oauths) == 0:
+        sp_oauth = SpotifyOAuth(client_id, client_secret,redirect_uri,scope=scope, open_browser=True)
+    else:
+        sp_oauth = current_oauths[-1]
+
     token_info = sp_oauth.get_cached_token()
-    print("ACCESS", token_info, file=sys.stdout)
     if token_info:
         access_token = token_info['access_token']
     else:
         url = request.url
-        print("URL", url, file=sys.stdout)
         code = sp_oauth.parse_response_code(url)
         if code:
             token_info = sp_oauth.get_access_token(code)
@@ -84,13 +55,13 @@ def index():
     if access_token:
         sp = spotipy.Spotify(access_token)
         room_id = uuid.uuid1()
-        rooms[room_id] = Room(sp_oauth)
-        return redirect('http://localhost:3000/' + str(random.randint(100000,999999)))
+        rooms[str(room_id)] = Room(sp_oauth)
+        return redirect('http://localhost:3000/' + str(room_id))
     
     return 'test'
 
 @app.route('/search', methods=['GET', 'POST'])
-def index():
+def search():
     params = request.get_json()['params']
     room_id, query = params['room_id'], params['query']
     return rooms[room_id].getSong(query)
